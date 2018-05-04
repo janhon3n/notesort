@@ -1,0 +1,10 @@
+.Bars {
+   display:flex;
+   flex-direction:row;
+   align-items: flex-end;
+}
+
+.Bar {
+   box-shadow: 1px 1px 5px black;
+   flex-grow: 1;
+}
