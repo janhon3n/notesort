@@ -1,6 +1,19 @@
-.App {
+.Options {
    display:flex;
+   background-color:hsl(200,10%,900%);
+   align-items: flex-end;
 }
-.App div {
-   flex-grow: 1;
+
+.Options .Input {
+   display:flex;
+   flex-direction:column;
+   margin:15px;
+   margin-right:5px;
+}
+
+.Options .Input input, .Options .Input select {
+   padding:10px;
+}
+.Options .Input button {
+   padding:10px;
 }

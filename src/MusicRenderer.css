@@ -1,0 +1,6 @@
+.MusicRenderer {
+   display:flex;
+}
+.MusicRenderer div {
+   flex-grow: 1;
+}

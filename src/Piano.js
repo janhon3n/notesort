@@ -18,7 +18,7 @@ export default class Piano extends Component {
 
       let whiteKeyHeight = this.props.height / whiteIndicies.length 
       return (
-         <svg height={this.props.height} width={60}>
+         <svg height={this.props.height} width={100}>
          {
             whiteIndicies.map((n) => {
                return this.createKey(n, false, whiteKeyHeight)
@@ -41,7 +41,8 @@ export default class Piano extends Component {
          x={0} y={posY}
          width={width}
          height={isBlack ? whiteKeyHeight * 2/3 : whiteKeyHeight}
-         fill={isActive ? "hsl(200,100%,60%)" :
+         fill={isActive ? 
+            (isBlack ? "hsl(45,100%,40%)" : "hsl(45,100%,60%)") :
             isBlack ? "#000" : "#EEE"}/>)
    }
 
