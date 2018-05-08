@@ -80,7 +80,7 @@ class MusicRenderer extends Component {
   playNotes(notes) {
     notes.forEach(n => {
       this.synth.triggerAttackRelease(
-        this.noteToString(n, 4 - Math.round(this.state.octaveCount / 2)),
+        this.noteToString(n, 3 - Math.round(this.state.octaveCount / 2)),
         '16n'
       )
     })

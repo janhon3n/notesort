@@ -18,3 +18,8 @@
 .Options .Input button {
    padding:10px;
 }
+
+
+.SortAndMusicSection {
+   display:flex;
+}

@@ -4,6 +4,7 @@ import './App.css'
 import { BubbleSorter } from './Sorting/BubbleSorter'
 import { SelectionSorter } from './Sorting/SelectionSorter'
 import { QuickSorter } from './Sorting/QuickSorter'
+import SortOptions from './SortOptions'
 
 export default class App extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ export default class App extends Component {
       major: [0, 2, 4, 5, 7, 9, 11],
       chromatic: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
       pentatonic: [0, 2, 4, 7, 9],
+      jazz: [0, 3, 5, 6, 7, 10],
     }
 
     this.launchSort = this.launchSort.bind(this)
@@ -35,26 +37,23 @@ export default class App extends Component {
     }
   }
 
-  createNotes() {
-    let scale = this.scales[this.state.scale]
+  createNotes(scaleName, octaveCount) {
+    let scale = this.scales[scaleName]
     let notes = []
     let i = 0
-    while (
-      notes.length === 0 ||
-      notes[notes.length - 1] < this.state.octaveCount * 12
-    ) {
+    while (notes.length === 0 || notes[notes.length - 1] < octaveCount * 12) {
       notes.push(scale[i % scale.length] + Math.floor(i / scale.length) * 12)
       i++
     }
     return shuffleArray(notes)
   }
 
-  launchSort() {
-    let notes = this.createNotes()
+  launchSort(sortType, scaleName, octaveCount) {
+    let notes = this.createNotes(scaleName, octaveCount)
     this.musicRenderer.current.newSortTask(
-      this.state.octaveCount,
+      octaveCount,
       notes,
-      this.createSorter(this.state.sortType, notes)
+      this.createSorter(sortType, notes)
     )
   }
 
@@ -77,64 +76,25 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <MusicRenderer
-          height={this.state.size.height - 100}
-          ref={this.musicRenderer}
-        />
-        <div
-          className="Options"
-          style={{
-            height: 100,
-          }}
-        >
-          <div className="Input">
-            Sort type:
-            <select
-              onChange={e => {
-                this.setState({ sortType: e.target.value })
-              }}
-            >
-              {['BubbleSort', 'SelectionSort', 'QuickSort'].map(sortName => {
-                return <option>{sortName}</option>
-              })}
-            </select>
-          </div>
-          <div className="Input">
-            Octave count:
-            <input
-              onChange={e => {
-                this.setState({ octaveCount: e.target.value })
-              }}
-              value={this.state.octaveCount}
-              type="number"
-              min="1"
-              step="1"
-              max="6"
-            />
-          </div>
-          <div className="Input">
-            Scale:
-            <select
-              onChange={e => {
-                this.setState({ scale: e.target.value })
-              }}
-            >
-              {Object.keys(this.scales).map(scale => {
-                return <option value={scale}>{scale}</option>
-              })}
-            </select>
-          </div>
-
-          <div className="Input">
-            <button
-              onClick={() => {
-                this.launchSort()
-              }}
-            >
-              Sort!
-            </button>
+        <div className="SortAndMusicSection">
+          <MusicRenderer
+            height={this.state.size.height - 100}
+            ref={this.musicRenderer}
+          />
+          <div
+            style={{
+              backgroundColor: '#EEE',
+              padding: '15px',
+            }}
+          >
+            <h2>Music options</h2>
           </div>
         </div>
+        <SortOptions
+          height={100}
+          launchSort={this.launchSort}
+          scales={Object.keys(this.scales)}
+        />
       </div>
     )
   }
