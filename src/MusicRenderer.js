@@ -1,33 +1,30 @@
 import React, { Component } from 'react'
 import Bars from './Bars'
 import Piano from './Piano'
-import { BubbleSorter } from './Sorting/BubbleSorter'
-import { SelectionSorter } from './Sorting/SelectionSorter'
 import Tone from 'tone'
 import './MusicRenderer.css'
 
 class MusicRenderer extends Component {
   constructor(props) {
     super(props)
+    this.synth = new Tone.PolySynth(6, Tone.Synth).toMaster()
     this.executeSortingStep = this.executeSortingStep.bind(this)
     this.sorter = null
-    this.synth = new Tone.PolySynth(6, Tone.Synth).toMaster()
     this.state = {
+      octaveCount: 4,
       sortingInProgress: false,
-      keyCount: 24,
       notes: [],
       activeNoteIndicies: [],
     }
   }
 
-  newSortTask = (keyCount, notes, sorter) => {
+  newSortTask = (octaveCount, notes, sorter) => {
     this.sorter = sorter
-    sorter.list = notes
     if (!this.state.sortingInProgress) {
       setTimeout(this.executeSortingStep, 500)
     }
     this.setState({
-      keyCount: keyCount,
+      octaveCount: octaveCount,
       notes: notes,
       activeNoteIndicies: [],
       sortingInProgress: true,
@@ -48,7 +45,7 @@ class MusicRenderer extends Component {
     if (!finished && this.state.sortingInProgress) {
       setTimeout(
         this.executeSortingStep,
-        [250, 500, 500][Math.floor(Math.random() * 3)]
+        300 //[250, 500, 500][Math.floor(Math.random() * 3)]
       )
     } else {
       this.setState({ sortingInProgress: false })
@@ -56,14 +53,14 @@ class MusicRenderer extends Component {
   }
 
   render() {
-    let stepCount = this.keyToBarValue(this.state.keyCount)
+    let stepCount = this.keyToBarValue(this.state.octaveCount * 12 + 1)
     return (
       <div className="MusicRenderer">
         <Piano
           height={this.props.height}
-          keyCount={this.state.keyCount}
+          keyCount={this.state.octaveCount * 12 + 1}
           activeNotes={this.state.notes.filter((n, i) => {
-            return this.state.activeNoteIndicies.indexOf(i) != -1
+            return this.state.activeNoteIndicies.indexOf(i) !== -1
           })}
         />
         <Bars
@@ -82,12 +79,15 @@ class MusicRenderer extends Component {
 
   playNotes(notes) {
     notes.forEach(n => {
-      this.synth.triggerAttackRelease(this.noteToString(n), '16n')
+      this.synth.triggerAttackRelease(
+        this.noteToString(n, 4 - Math.round(this.state.octaveCount / 2)),
+        '16n'
+      )
     })
   }
 
-  noteToString(note) {
-    let octave = 2 + Math.floor(note / 12)
+  noteToString(note, lowestOctave) {
+    let octave = lowestOctave + Math.ceil(note / 12)
     let name = [
       'C',
       'C#',

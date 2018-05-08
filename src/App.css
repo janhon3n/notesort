@@ -13,6 +13,7 @@
 
 .Options .Input input, .Options .Input select {
    padding:10px;
+   min-width:100px;
 }
 .Options .Input button {
    padding:10px;
